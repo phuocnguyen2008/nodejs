@@ -1,2 +1,3 @@
 .vscode
+src/resources/scss/_variables.scss
 node_modules/
