@@ -1,0 +1,70 @@
+<div class="content-menu">
+	<div class="otanics-grid-small">
+		<div class="row align-items-start">
+			<div class="col">
+				<h3>Môi trường</h3>
+					<h4>pH: {{resources_.Moi_truong.pH}}</h4>
+					<h4>DO: {{resources_.Moi_truong.DO}}</h4>
+			</div>
+			<div class="col">
+				<h3>Giống</h3>
+				<h4>Nguồn giống: {{resources_.Giong}}</h4>
+				<h4>Số lượng: {{resources_.Giong_so_luong}}</h4>
+			</div>
+			<div class="col">
+				<h3>Thu hoạch</h3>
+				<h4>Trọng lượng thu tỉa: {{resources_.Trong_luong_thu_tia}} tấn</h4>
+			</div>
+		</div>
+	</div>
+	<div class="row align-items-start">
+		<div class="col">
+			<div class="otanics-pump-chart">
+				<canvas id="myChart_pump"></canvas>
+				<script>
+				var ctx = document.getElementById('myChart_pump').getContext('2d');
+				labels_data = `{{resources_.Danh_sach_thiet_bi.Maybom.Thoigianhoatdong}}`;
+				labels_data = labels_data.split(',');
+				var chart = new Chart(ctx, {
+				type: 'line',
+				data: {
+					labels: labels_data,
+					datasets: [{
+						{{!-- label: `Pump {{resources_.Danh_sach_thiet_bi.Maybom.Ngaygio}}`, --}}
+						label: 'Máy bơm',
+						backgroundColor: 'rgb(255, 255, 255)',
+						borderColor: 'rgb(0, 0, 0)',
+						data: [{{resources_.Danh_sach_thiet_bi.Maybom.Trangthai}}]
+					}]
+				},
+				options: {}
+				});
+				</script>
+			</div>					
+		</div>
+		<div class="col">
+			<div class="otanics-feeder-chart">
+				<canvas id="myChart_feeder"></canvas>
+				<script>
+				var ctx = document.getElementById('myChart_feeder').getContext('2d');
+				labels_data = `{{resources_.Danh_sach_thiet_bi.Maychoan.Thoigianhoatdong}}`;
+				labels_data = labels_data.split(',');
+				var chart = new Chart(ctx, {
+				type: 'line',
+				data: {
+					labels: labels_data,
+					datasets: [{
+						{{!-- label: `May cho an{{resources_.Danh_sach_thiet_bi.Maychoan.Ngaygio}}`, --}}
+						label: 'Máy cho ăn',
+						backgroundColor: 'rgb(255, 255, 255)',
+						borderColor: 'rgb(0, 0, 0)',
+						data: [{{resources_.Danh_sach_thiet_bi.Maychoan.Trangthai}}]
+					}]
+				},
+				options: {}
+				});
+				</script>
+			</div>		
+		</div>
+	</div>
+</div>

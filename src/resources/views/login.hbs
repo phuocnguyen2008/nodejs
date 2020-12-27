@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="/css/sweetalert2.min.js"></script>
+		<link rel="stylesheet" href="/css/sweetalert2.min.css">
+	</head>
+
+	<body class="text">
+		<!-- Login Form -->
+		<main id="main-holder" class="hero is-info is-fullheight">
+			<div class="hero-body">
+				<div class="container">
+					<div class="columns is-centered">
+						<div class="column is-half">
+							<form id="login-form" method="POST">
+								<div class="field form-group">
+									<label class="label">Username/Email</label>
+									<p class="control has-icons-left">
+										<input
+											id="email"
+											class="input"
+											type="text"
+											name="username"
+											placeholder="Username/Email"
+										/>
+										<span class="form-message"></span>
+										<span class="icon is-small is-left">
+											<i class="fas fa-user"></i>
+										</span>
+									</p>
+								</div>
+
+								<div class="field form-group">
+									<label class="label">Password</label>
+									<p class="control has-icons-left">
+										<input
+											id="password"
+											type="password"
+											class="input"
+											type="text"
+											name="password"
+											placeholder="Password"
+										/>
+										<span class="form-message"></span>
+										<span class="icon is-small is-left">
+											<i class="fas fa-lock"></i>
+										</span>
+									</p>
+								</div>
+								<div class="field">
+									<button id="login-btn" class="float-left submit-button" type="submit" formmethod="post">Login</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+
+	</body>
+</html>

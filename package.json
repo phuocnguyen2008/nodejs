@@ -31,6 +31,9 @@
     }
   },
   "dependencies": {
+    "@azure/cosmos": "^3.9.3",
+    "bourbon": "^7.0.0",
+    "chart.js": "^2.9.4",
     "express": "^4.17.1",
     "express-handlebars": "^5.2.0",
     "husky": "^4.3.5",
@@ -39,7 +42,8 @@
     "morgan": "^1.10.0",
     "node-sass": "^5.0.0",
     "nodemon": "^2.0.6",
-    "prettier": "^2.2.1"
+    "prettier": "^2.2.1",
+    "sweetalert2": "^10.12.5"
   },
   "devDependencies": {}
 }

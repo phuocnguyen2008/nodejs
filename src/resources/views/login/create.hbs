@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+		<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+  </head>
+  <body>
+    {{>leftsidebar}}
+    <div class="content-menu">
+      <form>
+        <div class="form-group">
+          <label for="exampleFormControlInput1">Họ và Tên</label>
+          <input type="text" class="form-control" name="user_hoten" placeholder="name@example.com">
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="inputEmail4">Email</label>
+            <input type="email" class="form-control" name="user_email" placeholder="Email">
+          </div>
+          <div class="form-group col-md-6">
+            <label for="inputPassword4">Password</label>
+            <input type="password" class="form-control" name="user_password" placeholder="Password">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-3">
+            <div class="form-group">
+              <label for="exampleFormControlSelect1">Level</label>
+              <select class="form-control" name="user_level">
+                <option>L1</option>
+                <option>L2</option>
+                <option>L3</option>
+                <option>L4</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group col-md-3">
+            <div class="form-group">
+              <label for="exampleFormControlSelect1">Chọn trại</label>
+              <select class="form-control" name="user_trai">
+                <option>Kiên Giang</option>
+                <option>Lộc An</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group col-md-3">
+            <div class="form-group">
+              <label for="exampleFormControlSelect1">Chọn khu</label>
+              <select class="form-control" name="user_khu">
+                <option>1</option>
+                <option>2</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group col-md-3">
+            <div class="form-group">
+              <label for="exampleFormControlSelect1">Chọn Jetson</label>
+              <select class="form-control" name="user_jetson">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <button id="create-btn" class="float-left submit-button" type="submit" formmethod="post">Tạo người dùng mới</button>
+        </div>
+      </form>
+      
+    </div>
+  </body>
+</html>

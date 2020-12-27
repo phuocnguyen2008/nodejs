@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Map</title>
+
+		<link rel="stylesheet" href="/css/map.css" />
+		<script src="https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.js"></script>
+		<script src="https://api.mapbox.com/mapbox.js/plugins/turf/v3.0.11/turf.min.js"></script>
+		<link
+		href="https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.css"
+		rel="stylesheet"
+		/>
+		<script src="/function/func.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+	</head>
+
+	<body>
+		{{>leftsidebar}}
+		<div class="content-menu">
+			<div class="otanics-grid-small">
+				<div class="row align-items-start">
+					<div class="col">
+						<h5>Tổng sản lượng</h5>
+							<h6>23150 kg</h6>
+					</div>
+					<div class="col">
+						<h5>Thức ăn</h5>
+						<h6>31500 kg</h6>
+					</div>
+					<div class="col">
+						<h5>Doanh thu dự kiến</h5>
+						<h6>2,315 triệu đồng</h6>
+					</div>
+                    <div class="col">
+						<h5>FCR</h5>
+						<h6>1.36</h6>
+					</div>
+                    <div class="col">
+						<h5>Tổng chi phí</h5>
+						<h6>315 triệu đồng</h6>
+					</div>
+				</div>
+			</div>
+			<div class="map" id="map"></div>
+			
+		</div>
+		
+		<script>
+      /////////////////////////// map //////////////////////////////////////
+
+			mapboxgl.accessToken =
+				"pk.eyJ1IjoibDA1MTEiLCJhIjoiY2tnd2lhY3I5MGFlcDMzcGl0YzJtdDZ3dyJ9.a5r7ZXxK8v654PJQAZNa5Q";
+
+			var coordinates_box = document.getElementById("coordinates");
+			var map = new mapboxgl.Map({
+				container: "map",
+				maxZoom: 20,
+				minZoom: 10,
+				zoom: 14.5,
+				center: [107.35486143793747, 10.482702890701745],
+				style: mapStyle,
+				interactive: false,
+				bearing: -31, // bearing in degrees
+			});
+
+			var hoveredStateId = null;
+			var popup;
+			/////////////////////////// dragable marker //////////////////////////////////////
+
+			//var marker = new mapboxgl.Marker({
+			//  draggable: true,
+			//})
+			//  .setLngLat([107.35562399268565, 10.481454965464835])
+			//  .addTo(map);
+
+			//function onDragEnd() {
+			//  var lngLat = marker.getLngLat();
+			//  coordinates.style.display = "block";
+			//  coordinates.innerHTML =
+			//    "Longitude: " + lngLat.lng + "<br />Latitude: " + lngLat.lat;
+			//}
+
+			//marker.on("dragend", onDragEnd);
+
+			//////////////////////////////////// add module area /////////////////////////////////
+
+			map.on("load", function () {
+				map.addSource("module", {
+				type: "geojson",
+				data: geojson,
+				});
+
+				map.addLayer({
+				id: "module",
+				type: "fill",
+				source: "module",
+				layout: {},
+				paint: {
+					"fill-color": ["get", "color"],
+					"fill-opacity": [
+					"case",
+					["boolean", ["feature-state", "hover"], false],
+					0.7,
+					0.4,
+					],
+				},
+				});
+
+				map.addLayer({
+				id: "module-border",
+				type: "line",
+				source: "module",
+				layout: {},
+				paint: {
+					"line-color": ["get", "color"],
+					"line-width": 3,
+				},
+				});
+
+				// When the user moves their mouse over the state-fill layer, we'll update the
+				// feature state for the feature under the mouse.
+				map.on("mousemove", "module", function (e) {
+				if (e.features.length > 0) {
+					if (hoveredStateId) {
+					map.setFeatureState(
+						{ source: "module", id: hoveredStateId },
+						{ hover: false }
+					);
+					}
+					hoveredStateId = e.features[0].id;
+					map.setFeatureState(
+					{ source: "module", id: hoveredStateId },
+					{ hover: true }
+					);
+				}
+				});
+
+				// When the mouse leaves the state-fill layer, update the feature state of the
+				// previously hovered feature.
+				map.on("mouseleave", "module", function () {
+				if (hoveredStateId) {
+					map.setFeatureState(
+					{ source: "module", id: hoveredStateId },
+					{ hover: false }
+					);
+				}
+				hoveredStateId = null;
+				});
+
+				// When a click event occurs on a feature in the states layer, open a popup at the
+				// location of the click, with description HTML from its properties.
+
+				map.on("mouseenter", "module", function (e) {
+				var index = 0;
+
+				var point = [e.lngLat.lng, e.lngLat.lat];
+
+				for (i = 0; i < geojson.features.length; i++) {
+					if (
+					checkPointinsidePolygon(
+						turf,
+						point,
+						geojson.features[i].geometry.coordinates
+					)
+					) {
+					index = i;
+					if (popup != null) {
+						popup.remove();
+					}
+					popup = new mapboxgl.Popup({ className: "custom-popup" })
+						.setLngLat(e.lngLat)
+						.setHTML(
+						`<div class="popup-container form-inline">
+						<label class="popup-tsl"
+						>Tong san luong:
+						<p class="cp1" id="tsl"></p></label
+						>
+						<label class="popup-ta"
+						>Thuc an:
+						<p class="cp2" id="ta"></p></label
+						>
+						<label class="popup-fcr"
+						>FCR:
+						<p class="cp3" id="fcr"></p></label
+						>
+						<label class="popup-dtdk"
+						>Doanh thu du kien:
+						<p class="cp4" id="dtdk"></p></label
+						>
+						<label class="popup-tcp"
+						>Tong chi phi:
+						<p class="cp5" id="tcp"></p></label
+						>
+					</div>`
+						)
+						.addTo(map);
+					}
+				}
+
+				document.getElementById("tsl").innerHTML =
+					general_data[index].data.tsl;
+				document.getElementById("ta").innerHTML = general_data[index].data.ta;
+				document.getElementById("fcr").innerHTML =
+					general_data[index].data.fcr;
+				document.getElementById("dtdk").innerHTML =
+					general_data[index].data.dtdk;
+				document.getElementById("tcp").innerHTML =
+					general_data[index].data.tcp;
+				});
+
+				// Change the cursor to a pointer when the mouse is over the states layer.
+				map.on("mouseenter", "module", function () {
+				map.getCanvas().style.cursor = "pointer";
+				});
+
+				// Change it back to a pointer when it leaves.
+				map.on("mouseleave", "module", function () {
+				map.getCanvas().style.cursor = "";
+				popup.remove();
+				});
+			});
+    	</script>
+	</body>
+</html>

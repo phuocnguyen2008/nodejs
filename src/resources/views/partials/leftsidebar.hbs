@@ -1,0 +1,105 @@
+<div class="leftside" id="left">
+	<ul class="mcd-menu">
+		{{#if L1}}
+				<li>
+					<a href="">
+						<i class="fa fa-comments-o"></i>
+						<strong>Xem Trại</strong>
+					</a>
+					<ul>
+						{{#each data}}
+						<li><a href="/login/trai/{{this.ModuleId}}"><i class="fa fa-globe"></i>{{this.TenFarm}}</a></li>
+						{{/each}}
+					</ul>
+				</li>
+				<li>
+					<a href="">
+						<i class="fa fa-comments-o"></i>
+						<strong>Các khu</strong>
+					</a>
+					<ul>
+						{{#each data_NhanVien}}
+						<li><a href="/login/khu/{{this.id}}"><i class="fa fa-group"></i>Khu {{this.id}}</a></li>
+						{{/each}}
+					</ul>
+				</li>
+				<li>
+					<a href="">
+						<i class="fa fa-comments-o"></i>
+						<strong>Xem Ao</strong>
+					</a>
+					<ul>
+						{{#each data_ao}}
+						<li><a href="/login/ao/{{this.id}}"><i class="fa fa-certificate"></i>{{this.id}}</a></li>
+						{{/each}}
+					</ul>
+				</li>
+				<li>
+					<a href="/login/create">
+						<i class="fa fa-comments-o"></i>
+						<strong>Tạo người dùng</strong>
+					</a>
+				</li>
+				<li>
+					<a href="/login/delete">
+						<i class="fa fa-comments-o"></i>
+						<strong>Xóa người dùng</strong>
+					</a>
+				</li>
+		{{/if}}
+
+		{{#if L2}}
+			<li>
+				<a href="">
+					<i class="fa fa-comments-o"></i>
+					<strong>Các khu</strong>
+				</a>
+				<ul>
+					{{#each data_NhanVien}}
+					<li><a href="/login/khu/{{this.id}}"><i class="fa fa-group"></i>Khu {{this.id}}</a></li>
+					{{/each}}
+				</ul>
+			</li>
+
+			<li>
+				<a href="">
+					<i class="fa fa-comments-o"></i>
+					<strong>Xem Ao</strong>
+				</a>
+				<ul>
+					{{#each data_ao}}
+					<li><a href="/login/ao/{{this.id}}"><i class="fa fa-certificate"></i>{{this.id}}</a></li>
+					{{/each}}
+				</ul>
+			</li>
+		{{/if}}
+
+		{{#if L3}}
+			<li>
+				<a href="">
+					<i class="fa fa-comments-o"></i>
+					<strong>Xem Ao</strong>
+				</a>
+				<ul>
+					{{#each data_ao}}
+					<li><a href="/login/ao/{{this.id}}"><i class="fa fa-certificate"></i>{{this.id}}</a></li>
+					{{/each}}
+				</ul>
+			</li>
+		{{/if}}
+		
+		{{#if L4}}
+			<li>
+				<a href="">
+					<i class="fa fa-comments-o"></i>
+					<strong>Xem Ao</strong>
+				</a>
+				<ul>
+					{{#each data_ao}}
+					<li><a href="/login/ao/{{this.id}}"><i class="fa fa-certificate"></i>{{this.id}}</a></li>
+					{{/each}}
+				</ul>
+			</li>
+		{{/if}}
+	</ul>
+</div>

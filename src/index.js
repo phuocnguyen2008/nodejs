@@ -3,16 +3,27 @@ const app = express();
 const morgan = require('morgan');
 const handlebars = require('express-handlebars');
 const path = require('path');
-const port = 3000;
+const port = 8000;
+const CosmosClient = require('@azure/cosmos').CosmosClient;
 
 const route = require('./routes');
-const db = require('./config/db');
+const Database = require('./config/db');
+const { resourceUsage } = require('process');
 app.use(express.static(path.join(__dirname, 'public')));
+endpoint = 'https://otanicscosmos.documents.azure.com:443/';
+key =
+    'mWLXrZPPY151CxxYaRvZ5YhZPqTX3as4q4R9cbIQPWtz6jzlcqISY2PX3cWjk4ISqVKulTya8dvSyQt3wHnHKQ==';
+databaseId = 'OtanicsCosmosDB';
+containerId = 'Farm';
+const client = new CosmosClient({ endpoint, key });
+const database = client.database(databaseId);
+const container = database.container(containerId);
+
 // HTTP logger
 // app.use(morgan('combined'))
 
-// Connect to DB
-db.connect();
+// Database
+let db = new Database(databaseId, containerId);
 
 // Middleware for POST method to get body
 app.use(
