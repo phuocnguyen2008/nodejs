@@ -1,55 +1,78 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
   <head>
-		<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
   </head>
   <body>
-    {{>leftsidebar}}
     <div class="content-menu">
+            {{#if deleted}}
+            <div class="alert alert-primary" role="alert">
+              Successfully deleted !!!
+            </div>
+            {{/if}}
       <form>
-        <h2>Danh sách nhân viên</h2>
-        <table class="table table-hover">
-          <thead>
-            <tr>
-              <th scope="col">STT</th>
-              <th scope="col">Họ và Tên</th>
-              <th scope="col">Cấp bậc</th>
-              <th scope="col">Trại</th>
-              <th scope="col">Khu</th>
-              <th scope="col">Ao</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th scope="row">1</th>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
-              <td>Khu 1</td>
-              <td>Ao 1</td>
-            </tr>
-            <tr>
-              <th scope="row">2</th>
-              <td>Jacob</td>
-              <td>Thornton</td>
-              <td>@fat</td>
-              <td>Khu 2</td>
-              <td>Ao 1</td>
-            </tr>
-            <tr>
-              <th scope="row">3</th>
-              <td>Larry</td>
-              <td>the Bird</td>
-              <td>@twitter</td>
-              <td>Khu 3</td>
-              <td>Ao 1</td>
-            </tr>
-          </tbody>
-        </table>
-        <div class="field">
-          <button id="delete-btn" class="float-left submit-button" type="submit" formmethod="post">Xóa người dùng</button>
+        <div class="row">
+          <div class="col-12">
+            <table class="table table-bordered" id="table-kg">
+              <h6>Kien Giang</h6>
+              <thead>
+                <tr>
+                  <th scope="col">STT</th>
+                  <th scope="col">Họ Tên</th>
+                  <th scope="col">Level</th>
+                  <th scope="col">Email</th>
+                  <th scope="col">ID</th>
+                </tr>
+              </thead>
+              {{#each resources_kg}}
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="kg_customCheck{{@index}}" unchecked>
+                        <label class="custom-control-label" for="kg_customCheck{{@index}}"></label>
+                    </div>
+                  </td>
+                  <td>{{this.HoTen}}</td>
+                  <td>{{this.Level}}</td>
+                  <td>{{this.Email}}</td>
+                  <td>{{this.Id}}</td>
+                </tr>
+              </tbody>
+              {{/each}}
+            </table>
+            <table class="table table-bordered" id="table-la">
+              <h6>Loc An</h6>
+              <thead>
+                <tr>
+                  <th scope="col">STT</th>
+                  <th scope="col">Họ Tên</th>
+                  <th scope="col">Level</th>
+                  <th scope="col">Email</th>
+                  <th scope="col">ID</th>
+                </tr>
+              </thead>
+              {{#each resources_la}}
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="la_customCheck{{@index}}">
+                        <label class="custom-control-label" for="la_customCheck{{@index}}"></label>
+                    </div>
+                  </td>
+                  <td>{{this.HoTen}}</td>
+                  <td>{{this.Level}}</td>
+                  <td>{{this.Email}}</td>
+                  <td>{{this.Id}}</td>
+                </tr>
+              </tbody>
+              {{/each}}
+            </table>
+            <button id="delete-btn">Xóa người dùng</button>
+          </div>
         </div>
       </form>
+    <script src="/function/delete.js"></script>
     </div>
   </body>
 </html>

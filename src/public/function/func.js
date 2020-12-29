@@ -1,5 +1,3 @@
-const CosmosClient = require('@azure/cosmos').CosmosClient;
-
 var mapStyle = {
     version: 8,
     name: 'Dark',

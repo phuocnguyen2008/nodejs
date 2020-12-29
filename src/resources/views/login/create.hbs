@@ -6,6 +6,11 @@
   <body>
     {{>leftsidebar}}
     <div class="content-menu">
+      {{#if success}}
+      <div class="alert alert-primary" role="alert">
+        Successfully created !!!
+      </div>
+      {{/if}}
       <form>
         <div class="form-group">
           <label for="exampleFormControlInput1">Họ và Tên</label>
@@ -67,7 +72,6 @@
           <button id="create-btn" class="float-left submit-button" type="submit" formmethod="post">Tạo người dùng mới</button>
         </div>
       </form>
-      
     </div>
   </body>
 </html>

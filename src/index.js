@@ -1,15 +1,14 @@
 const express = require('express');
-const app = express();
 const morgan = require('morgan');
 const handlebars = require('express-handlebars');
 const path = require('path');
 const port = 8000;
 const CosmosClient = require('@azure/cosmos').CosmosClient;
+var session = require('express-session');
 
 const route = require('./routes');
 const Database = require('./config/db');
 const { resourceUsage } = require('process');
-app.use(express.static(path.join(__dirname, 'public')));
 endpoint = 'https://otanicscosmos.documents.azure.com:443/';
 key =
     'mWLXrZPPY151CxxYaRvZ5YhZPqTX3as4q4R9cbIQPWtz6jzlcqISY2PX3cWjk4ISqVKulTya8dvSyQt3wHnHKQ==';
@@ -21,26 +20,25 @@ const container = database.container(containerId);
 
 // HTTP logger
 // app.use(morgan('combined'))
+const app = express();
 
 // Database
 let db = new Database(databaseId, containerId);
 
+app.use(express.static(path.join(__dirname, 'public')));
+
 // Middleware for POST method to get body
-app.use(
-    express.urlencoded({
-        extended: true,
-    }),
-);
+app.use(express.urlencoded({ extended: true }));
 
 app.use(express.json());
-
-// Template Engine
-app.engine(
-    'hbs',
-    handlebars({
-        extname: '.hbs',
+app.use(
+    session({
+        secret: 'keyboard cat',
+        cookie: { maxAge: 60000 },
     }),
 );
+// Template Engine
+app.engine('hbs', handlebars({ extname: '.hbs' }));
 
 // Set view
 app.set('view engine', 'hbs');

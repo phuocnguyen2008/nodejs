@@ -1,4 +1,6 @@
 const CosmosClient = require('@azure/cosmos').CosmosClient;
+const Swal = require('sweetalert2');
+
 endpoint = 'https://otanicscosmos.documents.azure.com:443/';
 key =
     'mWLXrZPPY151CxxYaRvZ5YhZPqTX3as4q4R9cbIQPWtz6jzlcqISY2PX3cWjk4ISqVKulTya8dvSyQt3wHnHKQ==';
@@ -26,10 +28,9 @@ class LoginController {
     show(req, res) {
         var username = req.body.username;
         var password = req.body.password;
-        console.log(username, password);
         var check_flag = false;
         if (username && password) {
-            QueryInfo(res, username, password);
+            QueryInfo(req, res, username, password);
         } else {
             res.send('Invalid Username or Password !!!');
         }
@@ -44,7 +45,15 @@ class LoginController {
         QueryInfoTrai(res, req.params.slug);
     }
     create(req, res) {
-        res.render('login/create');
+        res.render('login/create', {
+            data: req.session.trai,
+            data_NhanVien: req.session.NhanVien,
+            data_ao: req.session.ao,
+            flag: req.session.flag,
+            L1: req.session.L1,
+            ten: req.session.name,
+            cap: req.session.level,
+        });
     }
     create_user(req, res) {
         let info = {
@@ -56,18 +65,17 @@ class LoginController {
             user_khu: req.body.user_khu,
             user_jetson: req.body.user_jetson,
         };
-        CreateUser(res, info);
+        CreateUser(req, res, info);
     }
     delete(req, res) {
-        res.render('login/delete');
+        QueryUser(req, res);
     }
     delete_user(req, res) {
-        res.send('Delete_user');
+        DeleteUser(res, req.body);
     }
 }
-
-// Function for login
-async function QueryInfo(res, username, password) {
+// Information login: Query username and password
+async function QueryInfo(req, res, username, password) {
     let querySpec = {
         query: `SELECT c.HoTen, c.Level, c.Id FROM c in Farm.NhanVien WHERE c.Email = '${username}' AND c.Password = '${password}'`,
     };
@@ -105,14 +113,22 @@ async function QueryInfo(res, username, password) {
                     }
                 }
             }
+            req.session.trai = trai;
+            req.session.NhanVien = nhanvien;
+            req.session.ao = ao;
+            req.session.flag = true;
+            req.session.L1 = L1;
+            req.session.name = name;
+            req.session.level = level;
+
             res.render('login/detail', {
-                data: trai,
-                data_NhanVien: nhanvien,
-                data_ao: ao,
-                flag: true,
-                L1,
-                ten: name,
-                cap: level,
+                data: req.session.trai,
+                data_NhanVien: req.session.NhanVien,
+                data_ao: req.session.ao,
+                flag: req.session.flag,
+                L1: req.session.L1,
+                ten: req.session.name,
+                cap: req.session.level,
             });
         } else if (level == 'L2') {
             L2 = true;
@@ -194,6 +210,7 @@ async function QueryInfo(res, username, password) {
     }
 }
 
+// Start --- Information after login: Query info ao khu trai
 async function QueryInfoAo(res, aoId) {
     let querySpec = {
         query: `SELECT * FROM e WHERE e.AoId = '${aoId}'`,
@@ -251,8 +268,9 @@ async function QueryInfoTrai(res, traiId) {
         cap: level,
     });
 }
+// Information after login: Query info ao khu trai --- End
 
-async function CreateUser(res, info) {
+async function CreateUser(req, res, info) {
     if (info.user_trai == 'Kiên Giang') {
         info.ModuleId = 'KG';
         info.user_trai = '1';
@@ -306,7 +324,73 @@ async function CreateUser(res, info) {
     const { resource: updatedItem } = await container
         .item(id, ModuleId)
         .replace(resources);
-    res.send('Successfully created !!!');
+    res.render('login/create', {
+        data: req.session.trai,
+        data_NhanVien: req.session.NhanVien,
+        data_ao: req.session.ao,
+        flag: req.session.flag,
+        L1: req.session.L1,
+        ten: req.session.name,
+        cap: req.session.level,
+        success: true,
+    });
+}
+
+async function QueryUser(req, res) {
+    let data_kg_;
+    let data_la_;
+    let data_kg = [];
+    let data_la = [];
+    let querySpec = {
+        query: 'SELECT * from c',
+    };
+    var { resources } = await container.items.query(querySpec).fetchAll();
+    for (i = 0; i < resources.length; i++) {
+        if (resources[i].ModuleId == 'KG') {
+            data_kg_ = resources[i];
+        } else {
+            data_la_ = resources[i];
+        }
+    }
+    for (j = 0; j < data_kg_.NhanVien.length; j++) {
+        if (data_kg_.NhanVien[j].Level == 'L1') continue;
+        else data_kg.push(data_kg_.NhanVien[j]);
+    }
+    for (k = 0; k < data_la_.NhanVien.length; k++) {
+        if (data_la_.NhanVien[k].Level == 'L1') continue;
+        else data_la.push(data_la_.NhanVien[k]);
+    }
+    res.render('login/delete', {
+        resources_kg: data_kg,
+        resources_la: data_la,
+        data: req.session.trai,
+        data_NhanVien: req.session.NhanVien,
+        data_ao: req.session.ao,
+        flag: req.session.flag,
+        L1: req.session.L1,
+        ten: req.session.name,
+        cap: req.session.level,
+    });
+}
+
+async function DeleteUser(res, data) {
+    console.log(data.data);
+    for (let i = 0; i < data.data.length; i++) {
+        getKey = Object.keys(data.data[i]).toString();
+        let querySpec = {
+            query: `SELECT * FROM b WHERE b.ModuleId = '${getKey}'`,
+        };
+        var { resources } = await container.items.query(querySpec).fetchAll();
+        resources = resources[0];
+        const { id, ModuleId } = resources;
+        let index = resources.NhanVien.map((element) => element.Email).indexOf(
+            data.data[i][getKey][1],
+        );
+        resources.NhanVien.splice(index, 1);
+        const { resource: updatedItem } = await container
+            .item(id, ModuleId)
+            .replace(resources);
+    }
 }
 
 module.exports = new LoginController();
