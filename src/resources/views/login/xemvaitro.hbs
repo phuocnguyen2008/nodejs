@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+  </head>
+  
+  <body>
+    {{>leftsidebar}}
+    <div class="content-menu">
+      <div class="container">
+        <div class="row">
+          <div class="col-12">
+            <table class="table" id="table-la">
+              <thead>
+                <tr>
+                  <th scope="col">ID</th>
+                  <th scope="col">Tên cấp bậc</th>
+                  {{#each table_keys}}
+                  <th scope="col">{{this}}</th>
+                  {{/each}}
+                </tr>
+              </thead>
+              <tbody>
+              {{#each data}}
+                <tr>
+                  <td>{{this.Id}}</td>
+                  <td>{{this.TenVaiTro}}</td>
+                  {{#each ../table_keys}}
+                      <td>
+                        {{#each_modified this ../this.ChucNang}}
+                        {{/each_modified}}
+                      </td>
+                  {{/each}}
+                </tr>
+              {{/each}}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    </script>
+  </body>
+</html>

@@ -7,12 +7,14 @@ key =
 databaseId = 'OtanicsCosmosDB';
 containerId = 'Farm';
 container1Id = 'Ao';
+container2Id = 'Level';
 const client = new CosmosClient({ endpoint, key });
 const database = client.database(databaseId);
 const container = database.container(containerId);
 const container1 = database.container(container1Id);
+const container2 = database.container(container2Id);
 
-var db_data, name, level;
+var db_data, name, level, flag;
 var trai = [];
 var nhanvien = [];
 var ao = [];
@@ -71,7 +73,10 @@ class LoginController {
         QueryUser(req, res);
     }
     delete_user(req, res) {
-        DeleteUser(res, req.body);
+        DeleteUser(req, res, req.body);
+    }
+    show_role(req, res) {
+        QueryInfoRole(req, res);
     }
 }
 // Information login: Query username and password
@@ -86,6 +91,7 @@ async function QueryInfo(req, res, username, password) {
         (trai = []), (nhanvien = []), (ao = []);
         name = resources[0].HoTen;
         level = resources[0].Level;
+        flag = true;
         let id = resources[0].Id;
         if (level == 'L1') {
             L1 = true;
@@ -113,22 +119,15 @@ async function QueryInfo(req, res, username, password) {
                     }
                 }
             }
-            req.session.trai = trai;
-            req.session.NhanVien = nhanvien;
-            req.session.ao = ao;
-            req.session.flag = true;
-            req.session.L1 = L1;
-            req.session.name = name;
-            req.session.level = level;
 
             res.render('login/detail', {
-                data: req.session.trai,
-                data_NhanVien: req.session.NhanVien,
-                data_ao: req.session.ao,
-                flag: req.session.flag,
-                L1: req.session.L1,
-                ten: req.session.name,
-                cap: req.session.level,
+                data: trai,
+                data_NhanVien: nhanvien,
+                data_ao: ao,
+                flag,
+                L1,
+                ten: name,
+                cap: level,
             });
         } else if (level == 'L2') {
             L2 = true;
@@ -154,7 +153,7 @@ async function QueryInfo(req, res, username, password) {
             res.render('login/detail', {
                 data_NhanVien: nhanvien,
                 data_ao: ao,
-                flag: true,
+                flag,
                 ten: name,
                 cap: level,
                 L2,
@@ -177,7 +176,7 @@ async function QueryInfo(req, res, username, password) {
             }
             res.render('login/detail', {
                 data_ao: ao,
-                flag: true,
+                flag,
                 ten: name,
                 cap: level,
                 L3,
@@ -200,7 +199,7 @@ async function QueryInfo(req, res, username, password) {
             }
             res.render('login/detail', {
                 data_ao: ao,
-                flag: true,
+                flag,
                 ten: name,
                 cap: level,
                 L4,
@@ -324,14 +323,15 @@ async function CreateUser(req, res, info) {
     const { resource: updatedItem } = await container
         .item(id, ModuleId)
         .replace(resources);
+    console.log(ao);
     res.render('login/create', {
-        data: req.session.trai,
-        data_NhanVien: req.session.NhanVien,
-        data_ao: req.session.ao,
-        flag: req.session.flag,
-        L1: req.session.L1,
-        ten: req.session.name,
-        cap: req.session.level,
+        data: trai,
+        data_NhanVien: nhanvien,
+        data_ao: ao,
+        flag: flag,
+        L1,
+        ten: name,
+        cap: level,
         success: true,
     });
 }
@@ -363,17 +363,18 @@ async function QueryUser(req, res) {
     res.render('login/delete', {
         resources_kg: data_kg,
         resources_la: data_la,
-        data: req.session.trai,
-        data_NhanVien: req.session.NhanVien,
-        data_ao: req.session.ao,
-        flag: req.session.flag,
-        L1: req.session.L1,
-        ten: req.session.name,
-        cap: req.session.level,
+        deleted: false,
+        data: trai,
+        data_NhanVien: nhanvien,
+        data_ao: ao,
+        flag: flag,
+        L1,
+        ten: name,
+        cap: level,
     });
 }
 
-async function DeleteUser(res, data) {
+async function DeleteUser(req, res, data) {
     console.log(data.data);
     for (let i = 0; i < data.data.length; i++) {
         getKey = Object.keys(data.data[i]).toString();
@@ -391,6 +392,27 @@ async function DeleteUser(res, data) {
             .item(id, ModuleId)
             .replace(resources);
     }
+    QueryUser(req, res);
 }
 
+async function QueryInfoRole(req, res) {
+    let querySpec = {
+        query: 'SELECT * FROM c ',
+    };
+    var { resources } = await container2.items.query(querySpec).fetchAll();
+    console.log(resources);
+    let table_heads = resources[resources.length - 1];
+    let table_keys = Object.keys(table_heads.ChucNang);
+    res.render('login/xemvaitro', {
+        data: resources,
+        table_keys: table_keys,
+        data: trai,
+        data_NhanVien: nhanvien,
+        data_ao: ao,
+        flag: flag,
+        L1,
+        ten: name,
+        cap: level,
+    });
+}
 module.exports = new LoginController();

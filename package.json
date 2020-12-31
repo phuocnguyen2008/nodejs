@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "beautiful": "lint-staged",
-    "start": "nodemon --inspect src/index.js",
+    "start": "env-cmd -f ./.env nodemon --inspect src/index.js",
     "watch": "node-sass --watch src/resources/scss/app.scss src/public/css/app.css",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -32,12 +32,16 @@
   },
   "dependencies": {
     "@azure/cosmos": "^3.9.3",
+    "bcryptjs": "^2.4.3",
     "bourbon": "^7.0.0",
     "chart.js": "^2.9.4",
+    "env-cmd": "^10.1.0",
     "express": "^4.17.1",
     "express-handlebars": "^5.2.0",
     "express-session": "^1.17.1",
+    "handlebars": "^4.7.6",
     "husky": "^4.3.5",
+    "jsonwebtoken": "^8.5.1",
     "lint-staged": "^10.5.3",
     "mongoose": "^5.11.6",
     "morgan": "^1.10.0",

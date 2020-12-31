@@ -11,6 +11,8 @@ const sendHttpRequest = (method, url, data) => {
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.addEventListener('load', function (e) {
         console.log(xhr.response);
+        document.getElementsByClassName('content-menu').innerHTML =
+            xhr.response;
     });
     xhr.send(JSON.stringify(data));
 };
@@ -36,7 +38,6 @@ const myFunction = () => {
     sendHttpRequest('POST', 'http://localhost:8000/login/delete', {
         data: userToDelete,
     });
-    sendHttpRequest('GET', 'http://localhost:8000/login/delete', {});
 };
 
 deleteBtn.addEventListener('click', myFunction);

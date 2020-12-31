@@ -2,28 +2,24 @@ const express = require('express');
 const morgan = require('morgan');
 const handlebars = require('express-handlebars');
 const path = require('path');
-const port = 8000;
-const CosmosClient = require('@azure/cosmos').CosmosClient;
 var session = require('express-session');
 
 const route = require('./routes');
 const Database = require('./config/db');
 const { resourceUsage } = require('process');
-endpoint = 'https://otanicscosmos.documents.azure.com:443/';
-key =
-    'mWLXrZPPY151CxxYaRvZ5YhZPqTX3as4q4R9cbIQPWtz6jzlcqISY2PX3cWjk4ISqVKulTya8dvSyQt3wHnHKQ==';
-databaseId = 'OtanicsCosmosDB';
-containerId = 'Farm';
-const client = new CosmosClient({ endpoint, key });
-const database = client.database(databaseId);
-const container = database.container(containerId);
-
-// HTTP logger
-// app.use(morgan('combined'))
+const port = process.env.PORT;
 const app = express();
 
-// Database
-let db = new Database(databaseId, containerId);
+const hbs_helper = require('handlebars');
+hbs_helper.registerHelper(
+    'each_modified',
+    function (context, context2, options) {
+        return new hbs_helper.SafeString(`<div class="custom-control custom-checkbox" style="left: 50%; ">
+                                        <input type="checkbox" class="custom-control-input" id="kg_1" ${context2[context]}>
+                                        <label class="custom-control-label" for="kg_1"></label>
+                                      </div>`);
+    },
+);
 
 app.use(express.static(path.join(__dirname, 'public')));
 
