@@ -35,7 +35,7 @@ const myFunction = () => {
             userToDelete.push(obj);
         }
     }
-    sendHttpRequest('POST', 'http://localhost:8000/login/delete', {
+    sendHttpRequest('POST', 'http://localhost:8080/login/delete', {
         data: userToDelete,
     });
 };

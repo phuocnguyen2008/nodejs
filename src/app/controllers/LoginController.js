@@ -70,6 +70,7 @@ class LoginController {
         CreateUser(req, res, info);
     }
     delete(req, res) {
+        console.log('Test1');
         QueryUser(req, res);
     }
     delete_user(req, res) {
@@ -386,14 +387,15 @@ async function QueryUser(req, res) {
 }
 
 async function DeleteUser(req, res, data) {
-    console.log(data.data);
     for (let i = 0; i < data.data.length; i++) {
         getKey = Object.keys(data.data[i]).toString();
+        console.log(getKey);
         let querySpec = {
             query: `SELECT * FROM b WHERE b.ModuleId = '${getKey}'`,
         };
         var { resources } = await container.items.query(querySpec).fetchAll();
         resources = resources[0];
+        // console.log(resources)
         const { id, ModuleId } = resources;
         let index = resources.NhanVien.map((element) => element.Email).indexOf(
             data.data[i][getKey][0],
@@ -403,7 +405,7 @@ async function DeleteUser(req, res, data) {
             .item(id, ModuleId)
             .replace(resources);
     }
-    QueryUser(req, res);
+    // QueryUser(req, res);
 }
 
 async function QueryInfoRole(req, res) {
