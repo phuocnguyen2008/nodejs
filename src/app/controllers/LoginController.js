@@ -78,6 +78,17 @@ class LoginController {
     show_role(req, res) {
         QueryInfoRole(req, res);
     }
+    getToken(req, res) {
+        console.log(
+            getAuthorizationTokenUsingMasterKey(
+                'POST',
+                'sprocs',
+                'dbs/OtanicsDB/colls/Ao/sprocs/querypH',
+                'Thu, 07 Jan 2021 09:07:00 GMT',
+                'mWLXrZPPY151CxxYaRvZ5YhZPqTX3as4q4R9cbIQPWtz6jzlcqISY2PX3cWjk4ISqVKulTya8dvSyQt3wHnHKQ==',
+            ),
+        );
+    }
 }
 // Information login: Query username and password
 async function QueryInfo(req, res, username, password) {
@@ -385,7 +396,7 @@ async function DeleteUser(req, res, data) {
         resources = resources[0];
         const { id, ModuleId } = resources;
         let index = resources.NhanVien.map((element) => element.Email).indexOf(
-            data.data[i][getKey][1],
+            data.data[i][getKey][0],
         );
         resources.NhanVien.splice(index, 1);
         const { resource: updatedItem } = await container
@@ -400,11 +411,13 @@ async function QueryInfoRole(req, res) {
         query: 'SELECT * FROM c ',
     };
     var { resources } = await container2.items.query(querySpec).fetchAll();
-    console.log(resources);
+    // console.log(resources);
     let table_heads = resources[resources.length - 1];
     let table_keys = Object.keys(table_heads.ChucNang);
+    // console.log(table_heads);
+    console.log(table_keys);
     res.render('login/xemvaitro', {
-        data: resources,
+        data_chucnang: resources,
         table_keys: table_keys,
         data: trai,
         data_NhanVien: nhanvien,
@@ -415,4 +428,42 @@ async function QueryInfoRole(req, res) {
         cap: level,
     });
 }
+var crypto = require('crypto');
+
+function getAuthorizationTokenUsingMasterKey(
+    verb,
+    resourceType,
+    resourceId,
+    date,
+    masterKey,
+) {
+    var key = new Buffer.from(masterKey, 'base64');
+
+    var text =
+        (verb || '').toLowerCase() +
+        '\n' +
+        (resourceType || '').toLowerCase() +
+        '\n' +
+        (resourceId || '') +
+        '\n' +
+        date.toLowerCase() +
+        '\n' +
+        '' +
+        '\n';
+
+    var body = new Buffer.from(text, 'utf8');
+    var signature = crypto
+        .createHmac('sha256', key)
+        .update(body)
+        .digest('base64');
+
+    var MasterToken = 'master';
+
+    var TokenVersion = '1.0';
+
+    return encodeURIComponent(
+        'type=' + MasterToken + '&ver=' + TokenVersion + '&sig=' + signature,
+    );
+}
+
 module.exports = new LoginController();
