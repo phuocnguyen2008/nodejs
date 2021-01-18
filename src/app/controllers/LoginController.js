@@ -1,5 +1,5 @@
 const CosmosClient = require('@azure/cosmos').CosmosClient;
-const Swal = require('sweetalert2');
+// const Swal = require('sweetalert2');
 
 endpoint = 'https://otanicscosmos.documents.azure.com:443/';
 key =
